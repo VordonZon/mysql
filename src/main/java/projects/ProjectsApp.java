@@ -1,8 +1,8 @@
-package recipes;
+package projects;
 
-import recipes.dao.DbConnection;
+import projects.dao.DbConnection;
 
-public class Recipes {
+public class ProjectsApp {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
