@@ -15,19 +15,22 @@ import projects.service.ProjectService;
 public class ProjectsApp {
 	private Scanner scanner = new Scanner(System.in);
 	private ProjectService projectService = new ProjectService();
+	private Project curProject;
 
 	//@formatter:off
 	private List<String> operations = List.of(
-		"1) Add a project"
+		"1) Add a project",
+		"2) List all projects",
+		"3) Select Project"
 	);
 	//@formatter:on
 
-	//where the program starts
+	// where the program starts
 	public static void main(String[] args) {
 		new ProjectsApp().processUserSelection();
 	}
 
-	//the main loop of the program
+	// the main loop of the program
 	private void processUserSelection() {
 		boolean done = false;
 
@@ -42,6 +45,15 @@ public class ProjectsApp {
 				case 1:
 					createProject();
 					break;
+
+				case 2:
+					listProjects();
+					break;
+
+				case 3:
+					selectProject();
+					break;
+
 				default:
 					System.out.println("\n" + selection + " is not a valid selection. Try again.");
 				}
@@ -51,8 +63,26 @@ public class ProjectsApp {
 			}
 		}
 	}
-	
-	//sets up and sends the project to be saved to the database 
+
+	//Selects project by id
+	private void selectProject() {
+		Integer projectId = getIntInput("Enter a project ID to select a project");
+		curProject = null;
+		curProject = projectService.fetchProjectById(projectId);
+		
+		if(Objects.isNull(curProject)) {
+			System.out.println("That was not a valid project. Select a valid project.");
+		}
+	}
+
+	//prints a list of all the projects in the database
+	private void listProjects() {
+		List<Project> projects = projectService.fetchAllProjects();
+		System.out.println("\nProjects:");
+		projects.forEach( project -> System.out.println("   " + project.getProjectId() + ": " + project.getProjectName()));
+	}
+
+	// sets up and sends the project to be saved to the database
 	private void createProject() {
 		String projectName = getStringInput("Enter the project name");
 		BigDecimal estimatedHours = getDecimalInput("Enter the estimated hours");
@@ -70,8 +100,8 @@ public class ProjectsApp {
 		Project dbProject = projectService.addProject(project);
 		System.out.println("You have successfully created project: " + dbProject);
 	}
-	
-	//checks if input Int is valid 1 - 5
+
+	// checks if input Int is valid 1 - 5
 	private Integer checkDifficulty() {
 		Integer num = getIntInput("Enter the project difficulty (1-5)");
 
@@ -82,21 +112,21 @@ public class ProjectsApp {
 		return num;
 	}
 
-	//exits  menu
+	// exits menu
 	private boolean exitMenu() {
 		System.out.println("Exiting the menu.");
 		return true;
 	}
-	
-	//gets and checks input during menu selection
+
+	// gets and checks input during menu selection
 	private int getUserSelection() {
 		printOperations();
 
 		Integer input = getIntInput("Enter a menu selection");
 		return Objects.isNull(input) ? -1 : input;
 	}
-	
-	//checks and returns BigDecimal input
+
+	// checks and returns BigDecimal input
 	private BigDecimal getDecimalInput(String prompt) {
 		String input = getStringInput(prompt);
 		if (Objects.isNull(input)) {
@@ -111,7 +141,7 @@ public class ProjectsApp {
 		}
 	}
 
-	//checks and returns valid Int input
+	// checks and returns valid Int input
 	private Integer getIntInput(String prompt) {
 		String input = getStringInput(prompt);
 		if (Objects.isNull(input)) {
@@ -126,7 +156,7 @@ public class ProjectsApp {
 		}
 	}
 
-	//checks and returns valid string input
+	// checks and returns valid string input
 	private String getStringInput(String prompt) {
 		System.out.println(prompt + ": ");
 		String input = scanner.nextLine();
@@ -134,12 +164,18 @@ public class ProjectsApp {
 		return input.isBlank() ? null : input.trim();
 	}
 
-	//prints menu options
+	// prints menu options
 	private void printOperations() {
 		System.out.println("\nSelect an option. Press the Enter key to quit:");
 
 		for (String line : operations) {
 			System.out.println("   " + line);
+		}
+
+		if (Objects.isNull(curProject)) {
+			System.out.println("\nYou are not working with a project.");
+		} else {
+			System.out.println("\nYou are working with project: " + curProject);
 		}
 	}
 
