@@ -1,5 +1,7 @@
 package projects.exception;
 
+//Class that handles exceptions
+
 @SuppressWarnings("serial")
 public class DbException extends RuntimeException {
 
