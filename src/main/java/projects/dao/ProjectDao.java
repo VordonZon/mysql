@@ -243,7 +243,7 @@ public class ProjectDao extends DaoBase {
 
 	//deletes project and returns true if successful
 	public boolean deleteProject(Integer projectId) {
-		String sql = "DELETE FROM " + PROJECT_TABLE + "WHERE project_id = ?";
+		String sql = "DELETE FROM " + PROJECT_TABLE + " WHERE project_id = ?";
 
 		try (Connection conn = DbConnection.getConnection()) {
 			startTransaction(conn);

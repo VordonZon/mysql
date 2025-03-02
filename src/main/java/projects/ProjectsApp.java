@@ -63,9 +63,10 @@ public class ProjectsApp {
 
 				case 5:
 					deleteProject();
-
+					break;
+					
 				default:
-					System.out.println("\n" + selection + " is not a valid selection. Try again.");
+					System.out.println("\nMenu selection " + selection + " is not a valid selection. Try again.");
 				}
 
 			} catch (Exception e) {
@@ -79,7 +80,7 @@ public class ProjectsApp {
 		listProjects();
 
 		// gets projectId input
-		Integer projectId = getIntInput("Enter a project ID to delete a project.");
+		Integer projectId = getIntInput("Enter a project ID to delete a project");
 
 		// deletes project from database
 		projectService.deleteProject(projectId);
@@ -105,7 +106,7 @@ public class ProjectsApp {
 		BigDecimal estimatedHours = getDecimalInput(
 				"Update the estimated hours [" + curProject.getEstimatedHours() + "]");
 		BigDecimal actualHours = getDecimalInput("Update the actual hours [" + curProject.getActualHours() + "]");
-		Integer difficulty = getIntInput("Update the difficulty [" + curProject.getDifficulty() + "]");
+		Integer difficulty = checkDifficulty();
 		String notes = getStringInput("Update the notes [" + curProject.getNotes() + "]");
 
 		Project project = new Project();
@@ -166,14 +167,15 @@ public class ProjectsApp {
 
 	// checks if input Int is valid 1 - 5
 	private Integer checkDifficulty() {
-		Integer num = getIntInput("Enter the project difficulty (1-5)");
+		Integer num = getIntInput("Enter the project difficulty (0-5)");
 
 		// if number is less than 0 or greater than 5, try again
-		if (num < 0 && num > 5) {
-			System.out.println("Enter a number between 1-5");
-			checkDifficulty();
+		if (!(num >= 0 && num <= 5)) {
+			System.out.println("Enter a number between 0 and 5");
+			return checkDifficulty();
+		} else {
+			return num;
 		}
-		return num;
 	}
 
 	// exits menu
@@ -225,7 +227,7 @@ public class ProjectsApp {
 
 	// checks and returns valid string input
 	private String getStringInput(String prompt) {
-		System.out.println(prompt + ": ");
+		System.out.print(prompt + ": ");
 		String input = scanner.nextLine();
 
 		//
